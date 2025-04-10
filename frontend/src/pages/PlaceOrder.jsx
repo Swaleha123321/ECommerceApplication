@@ -28,6 +28,8 @@ const PlaceOrder = () => {
         setFormData(data => ({ ...data, [name]: value }))
     }
 
+
+    /*
     const initPay = (order) => {
         const options = {
             key: import.meta.env.VITE_RAZORPAY_KEY_ID,
@@ -54,7 +56,7 @@ const PlaceOrder = () => {
         }
         const rzp = new window.Razorpay(options)
         rzp.open()
-    }
+    } */
 
     const onSubmitHandler = async (event) => {
         event.preventDefault()
@@ -80,13 +82,13 @@ const PlaceOrder = () => {
                 items: orderItems,
                 amount: getCartAmount() + delivery_fee
             }
-            
+
 
             switch (method) {
 
                 // API Calls for COD
                 case 'cod':
-                    const response = await axios.post(backendUrl + '/api/order/place',orderData,{headers:{token}})
+                    const response = await axios.post(backendUrl + '/api/order/place', orderData, { headers: { token } })
                     if (response.data.success) {
                         setCartItems({})
                         navigate('/orders')
@@ -95,6 +97,7 @@ const PlaceOrder = () => {
                     }
                     break;
 
+                /*
                 case 'stripe':
                     const responseStripe = await axios.post(backendUrl + '/api/order/stripe',orderData,{headers:{token}})
                     if (responseStripe.data.success) {
@@ -112,7 +115,7 @@ const PlaceOrder = () => {
                         initPay(responseRazorpay.data.order)
                     }
 
-                    break;
+                    break; */
 
                 default:
                     break;

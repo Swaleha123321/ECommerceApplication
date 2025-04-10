@@ -1,52 +1,54 @@
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
-import Stripe from 'stripe'
-import razorpay from 'razorpay'
+//import Stripe from 'stripe'
+//import razorpay from 'razorpay'
 
 // global variables
 const currency = 'inr'
 const deliveryCharge = 10
 
+/*
 // gateway initialize
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 const razorpayInstance = new razorpay({
     key_id : process.env.RAZORPAY_KEY_ID,
     key_secret : process.env.RAZORPAY_KEY_SECRET,
-})
+}) */
 
 // Placing orders using COD Method
-const placeOrder = async (req,res) => {
-    
+const placeOrder = async (req, res) => {
+
     try {
-        
-        const { userId, items, amount, address} = req.body;
+
+        const { userId, items, amount, address } = req.body;
 
         const orderData = {
             userId,
             items,
             address,
             amount,
-            paymentMethod:"COD",
-            payment:false,
+            paymentMethod: "COD",
+            payment: false,
             date: Date.now()
         }
 
         const newOrder = new orderModel(orderData)
         await newOrder.save()
 
-        await userModel.findByIdAndUpdate(userId,{cartData:{}})
+        await userModel.findByIdAndUpdate(userId, { cartData: {} })
 
-        res.json({success:true,message:"Order Placed"})
+        res.json({ success: true, message: "Order Placed" })
 
 
     } catch (error) {
         console.log(error)
-        res.json({success:false,message:error.message})
+        res.json({ success: false, message: error.message })
     }
 
 }
 
+/*
 // Placing orders using Stripe Method
 const placeOrderStripe = async (req,res) => {
     try {
@@ -183,52 +185,54 @@ const verifyRazorpay = async (req,res) => {
         console.log(error)
         res.json({success:false,message:error.message})
     }
-}
+} */
 
 
 // All Orders data for Admin Panel
-const allOrders = async (req,res) => {
+const allOrders = async (req, res) => {
 
     try {
-        
+
         const orders = await orderModel.find({})
-        res.json({success:true,orders})
+        res.json({ success: true, orders })
 
     } catch (error) {
         console.log(error)
-        res.json({success:false,message:error.message})
+        res.json({ success: false, message: error.message })
     }
 
 }
 
 // User Order Data For Forntend
-const userOrders = async (req,res) => {
+const userOrders = async (req, res) => {
     try {
-        
+
         const { userId } = req.body
 
         const orders = await orderModel.find({ userId })
-        res.json({success:true,orders})
+        res.json({ success: true, orders })
 
     } catch (error) {
         console.log(error)
-        res.json({success:false,message:error.message})
+        res.json({ success: false, message: error.message })
     }
 }
 
 // update order status from Admin Panel
-const updateStatus = async (req,res) => {
+const updateStatus = async (req, res) => {
     try {
-        
+
         const { orderId, status } = req.body
 
         await orderModel.findByIdAndUpdate(orderId, { status })
-        res.json({success:true,message:'Status Updated'})
+        res.json({ success: true, message: 'Status Updated' })
 
     } catch (error) {
         console.log(error)
-        res.json({success:false,message:error.message})
+        res.json({ success: false, message: error.message })
     }
 }
 
-export {verifyRazorpay, verifyStripe ,placeOrder, placeOrderStripe, placeOrderRazorpay, allOrders, userOrders, updateStatus}
+//export { verifyRazorpay, verifyStripe, placeOrder, placeOrderStripe, placeOrderRazorpay, allOrders, userOrders, updateStatus }
+
+export { placeOrder, allOrders, userOrders, updateStatus }
